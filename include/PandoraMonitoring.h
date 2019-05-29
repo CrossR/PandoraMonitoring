@@ -262,6 +262,14 @@ public:
      */
     static bool SortPfosByEnergy(const pandora::ParticleFlowObject *const pLhs, const pandora::ParticleFlowObject *const pRhs);
 
+    /**
+     *  @brief  Sort pfos by descending number of hits 
+     * 
+     *  @param  pLhs address of first pfo
+     *  @param  pRhs address of second pfo
+     */
+    static bool SortPfosByNumberOfHits(const pandora::ParticleFlowObject *const pLhs, const pandora::ParticleFlowObject *const pRhs);
+
 private:
     /**
      *  @brief  Default constructor

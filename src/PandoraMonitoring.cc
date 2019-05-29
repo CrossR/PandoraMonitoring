@@ -761,7 +761,7 @@ TEveElement *PandoraMonitoring::VisualizeParticleFlowObjects(const PfoList *cons
 {
     this->InitializeEve();
     PfoVector pfoVector(pPfoList->begin(), pPfoList->end());
-    std::sort(pfoVector.begin(), pfoVector.end(), PandoraMonitoring::SortPfosByEnergy);
+    std::sort(pfoVector.begin(), pfoVector.end(), PandoraMonitoring::SortPfosByNumberOfHits);
 
     const std::string starter("---");
     const std::string pfoListTitle(name.empty() ? "Pfos" : name);
@@ -1038,6 +1038,32 @@ bool PandoraMonitoring::SortTracksByMomentum(const Track *const pLhs, const Trac
 bool PandoraMonitoring::SortPfosByEnergy(const ParticleFlowObject *const pLhs, const ParticleFlowObject *const pRhs)
 {
     return (pLhs->GetEnergy() > pRhs->GetEnergy());
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
+bool PandoraMonitoring::SortPfosByNumberOfHits(const ParticleFlowObject *const pLhs, const ParticleFlowObject *const pRhs)
+{
+    int pLhsNHits = 0;
+    int pRhsNHits = 0;
+
+    for (auto cluster : pLhs->GetClusterList()) {
+
+        if (TPC_3D != (*(cluster->GetOrderedCaloHitList().begin()->second->begin()))->GetHitType())
+            continue;
+
+        pLhsNHits += cluster->GetNCaloHits();
+    }
+
+    for (auto cluster : pRhs->GetClusterList()) {
+
+        if (TPC_3D != (*(cluster->GetOrderedCaloHitList().begin()->second->begin()))->GetHitType())
+            continue;
+
+        pRhsNHits += cluster->GetNCaloHits();
+    }
+
+    return (pLhsNHits > pRhsNHits);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
