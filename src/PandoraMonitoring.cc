@@ -980,6 +980,13 @@ void PandoraMonitoring::ViewEvent()
     // That is, exactly what the current window shows.
     // m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/mw.png");
 
+    // This will resize the window, save the initial tab, then swap to tab 1.
+    // m_pEveManager->GetMainWindow()->Resize(1920, 1080);
+    // m_pEveManager->GetBrowser()->SetTab(1, 0);
+    // m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/mw0.png");
+    // m_pEveManager->GetBrowser()->SetTab(1, 1);
+    // m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/mw1.png");
+
     this->Pause();
 
     m_pEveManager->GetCurrentEvent()->SetRnrSelfChildren(kFALSE,kFALSE);
