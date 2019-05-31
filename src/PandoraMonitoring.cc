@@ -980,12 +980,15 @@ void PandoraMonitoring::ViewEvent()
     // That is, exactly what the current window shows.
     // m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/mw.png");
 
-    // This will resize the window, save the initial tab, then swap to tab 1.
-    // m_pEveManager->GetMainWindow()->Resize(1920, 1080);
-    // m_pEveManager->GetBrowser()->SetTab(1, 0);
-    // m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/mw0.png");
-    // m_pEveManager->GetBrowser()->SetTab(1, 1);
-    // m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/mw1.png");
+    // This will resize the window, save the initial tab, then cycle through
+    // some of the tabs.
+    m_pEveManager->GetMainWindow()->Resize(1920, 1080);
+    m_pEveManager->GetBrowser()->SetTab(Tab::Right, EventDisplay::Viewer1);
+    m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/viewer1.png");
+    m_pEveManager->GetBrowser()->SetTab(Tab::Right, EventDisplay::MultiView);
+    m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/multiView.png");
+    m_pEveManager->GetBrowser()->SetTab(Tab::Right, EventDisplay::TwoDViews);
+    m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/twoDViews.png");
 
     this->Pause();
 

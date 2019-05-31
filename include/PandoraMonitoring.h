@@ -33,6 +33,27 @@ namespace pandora { class CartesianVector; class LineGap; class BoxGap; class Co
 namespace pandora_monitoring
 {
 
+// These two enums are to help saving out the different event display views.
+
+// Enum for tab location in the Main Window.
+enum Tab {
+    Left,
+    Right,
+    Bottom
+};
+
+// Enum for the different event display tabs in the main window.
+enum EventDisplay {
+    Viewer1,
+    MultiView,
+    ThreeDView,
+    WView,
+    UView,
+    VView,
+    TwoDViews,
+};
+
+
 /**
  *  @brief  PandoraMonitoring singleton class
  */
