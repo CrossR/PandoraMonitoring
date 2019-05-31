@@ -976,6 +976,10 @@ void PandoraMonitoring::ViewEvent()
 
     m_pEveManager->Redraw3D(kTRUE, kTRUE);
 
+    // This call will save the main window
+    // That is, exactly what the current window shows.
+    // m_pEveManager->GetMainWindow()->SaveAs("/home/scratch/mw.png");
+
     this->Pause();
 
     m_pEveManager->GetCurrentEvent()->SetRnrSelfChildren(kFALSE,kFALSE);
