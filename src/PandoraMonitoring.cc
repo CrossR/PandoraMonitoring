@@ -461,7 +461,7 @@ TEveElement *PandoraMonitoring::VisualizeTracks(const TrackList *const pTrackLis
         pTEveTrack->SetName(sstrName.str().c_str());
         pTEveTrack->SetTitle(sstr.str().c_str());
         pTEveTrack->SetLineColor(GetROOTColor(trackColor));
-        pTEveTrack->SetLineWidth(1);
+        pTEveTrack->SetLineWidth(6);
         pTEveTrack->SetPickable(kTRUE);
 
         // Create mark at track end
@@ -856,7 +856,7 @@ TEveElement *PandoraMonitoring::VisualizeVertices(const pandora::VertexList *con
             sstr << starter << "Vertex\n" << vertexPosition;
             const std::string markerName(sstr.str());
             const std::string markerTitle(markerName.empty() ? "Marker" : markerName);
-            const int markerSize(1);
+            const int markerSize(4);
             const int markerStyle(20);
 
             TEvePointSet *pTEvePointSetMarker = new TEvePointSet(markerTitle.c_str(), 1);
@@ -864,7 +864,8 @@ TEveElement *PandoraMonitoring::VisualizeVertices(const pandora::VertexList *con
             pTEvePointSetMarker->SetPoint(0, vertexPosition.GetX() * m_scalingFactor, vertexPosition.GetY() * m_scalingFactor, vertexPosition.GetZ() * m_scalingFactor);
 
             const Color chosenColor((color < AUTO) ? color : ORANGE);
-            pTEvePointSetMarker->SetMarkerColor(GetROOTColor(chosenColor));
+            if (false) std::cout << chosenColor;
+            pTEvePointSetMarker->SetMarkerColor(kOrange);
             pTEvePointSetMarker->SetMarkerSize(markerSize);
             pTEvePointSetMarker->SetMarkerStyle(markerStyle);
 
@@ -1445,7 +1446,7 @@ void PandoraMonitoring::InitializeViews()
     pTEveWindowPack->SetShowTitleBar(kFALSE);
     pTEveWindowPack->NewSlot()->MakeCurrent();
     m_p3DView = m_pEveManager->SpawnNewViewer("3D View", "");
-    this->AddScenes(m_p3DView, m_p3DEventScene, m_p3DGeometryScene, TGLViewer::kCameraPerspXOZ, 1);
+    this->AddScenes(m_p3DView, m_p3DEventScene, m_p3DGeometryScene, TGLViewer::kCameraPerspXOZ, 0);
 
     pTEveWindowPack = pTEveWindowPack->NewSlot()->MakePack();
     pTEveWindowPack->SetShowTitleBar(kFALSE);
@@ -1471,7 +1472,7 @@ void PandoraMonitoring::InitializeViews()
     pTEveWindowPack->SetShowTitleBar(kFALSE);
     pTEveWindowPack->NewSlot()->MakeCurrent();
     m_p3DView = m_pEveManager->SpawnNewViewer("3D View", "");
-    this->AddScenes(m_p3DView, m_p3DEventScene, m_p3DGeometryScene, TGLViewer::kCameraPerspXOZ, 1);
+    this->AddScenes(m_p3DView, m_p3DEventScene, m_p3DGeometryScene, TGLViewer::kCameraPerspXOZ, 0);
 
     pTEveWindowSlot = TEveWindow::CreateWindowInTab(m_pEveManager->GetBrowser()->GetTabRight());
     pTEveWindowPack = pTEveWindowSlot->MakePack();
@@ -1530,6 +1531,7 @@ void PandoraMonitoring::AddScenes(TEveViewer *pTEveViewer, TEveScene *pTEveEvent
     pTEveViewer->AddScene(pTEveEventScene);
     pTEveViewer->GetGLViewer()->SetCurrentCamera(camera);
     pTEveViewer->GetGLViewer()->ColorSet().Background().SetColor(kWhite);
+    pTEveViewer->GetGLViewer()->SetStyle(TGLRnrCtx::kWireFrame);
 
     int currentAxisType(0);
     bool axisDepthTest(false);
@@ -1579,12 +1581,42 @@ void PandoraMonitoring::InitializeLArTPCs(TGeoVolume *pMainDetectorVolume, TGeoM
             m_minZLArTPC = minZLArTPC;
 
         TGeoBBox *pTGeoBBox = new TGeoBBox((name + "_shape").c_str(), (pLArTPC->GetWidthX()/2.f), (pLArTPC->GetWidthY()/2.f), (pLArTPC->GetWidthZ()/2.f));
-        pLArTPCVol = new TGeoVolume(name.c_str(), pTGeoBBox, pLArTPCMedium);
-        pLArTPCVol->SetLineColor(GetROOTColor(Color(color)));
-        pLArTPCVol->SetFillColor(GetROOTColor(Color(color)));
-        pLArTPCVol->SetTransparency(transparency);
 
-        pMainDetectorVolume->AddNode(pLArTPCVol, 0, new TGeoTranslation(pLArTPC->GetCenterX(), pLArTPC->GetCenterY(), pLArTPC->GetCenterZ()));
+        const int thickness = 15;
+        const float rz = 0.1;
+
+        for (int i = -1 * thickness; i <= thickness; ++i) {
+            if (i == 0) continue;
+
+            pLArTPCVol = new TGeoVolume((name + "X" + i), pTGeoBBox, pLArTPCMedium);
+            pLArTPCVol->SetLineColor(GetROOTColor(Color(color)));
+            pLArTPCVol->SetFillColor(GetROOTColor(Color(color)));
+            pLArTPCVol->SetTransparency(transparency / (thickness * 6));
+
+            pMainDetectorVolume->AddNode(pLArTPCVol, 0, new TGeoTranslation(pLArTPC->GetCenterX() + (i * rz), pLArTPC->GetCenterY(), pLArTPC->GetCenterZ()));
+        }
+
+        for (int i = -1 * thickness; i <= thickness; ++i) {
+            if (i == 0) continue;
+
+            pLArTPCVol = new TGeoVolume((name + "Y" + i), pTGeoBBox, pLArTPCMedium);
+            pLArTPCVol->SetLineColor(GetROOTColor(Color(color)));
+            pLArTPCVol->SetFillColor(GetROOTColor(Color(color)));
+            pLArTPCVol->SetTransparency(transparency / (thickness * 6));
+
+            pMainDetectorVolume->AddNode(pLArTPCVol, 0, new TGeoTranslation(pLArTPC->GetCenterX(), pLArTPC->GetCenterY() + (i * rz), pLArTPC->GetCenterZ()));
+        }
+
+        for (int i = -1 * thickness; i <= thickness; ++i) {
+            if (i == 0) continue;
+
+            pLArTPCVol = new TGeoVolume((name + "Z" + i), pTGeoBBox, pLArTPCMedium);
+            pLArTPCVol->SetLineColor(GetROOTColor(Color(color)));
+            pLArTPCVol->SetFillColor(GetROOTColor(Color(color)));
+            pLArTPCVol->SetTransparency(transparency / (thickness * 6));
+
+            pMainDetectorVolume->AddNode(pLArTPCVol, 0, new TGeoTranslation(pLArTPC->GetCenterX(), pLArTPC->GetCenterY(), pLArTPC->GetCenterZ() + (i * rz)));
+        }
         color++;
    } 
 }
@@ -1642,6 +1674,7 @@ void PandoraMonitoring::InitializeSubDetectors(TGeoVolume *pMainDetectorVolume, 
             pSubDetVol->SetLineColor(GetROOTColor(Color(color)));
             pSubDetVol->SetFillColor(GetROOTColor(Color(color)));
             pSubDetVol->SetTransparency(transparency);
+            pSubDetVol->SetTransparency(0 * transparency);
 
             if (drawInvisible)
                 pSubDetVol->SetVisibility(kFALSE);

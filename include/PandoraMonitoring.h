@@ -480,19 +480,19 @@ private:
 #define COLOR_TABLE(d)                                                      \
     d(WHITE,           kWhite)                                              \
     d(BLACK,           kBlack)                                              \
-    d(RED,             kRed)                                                \
-    d(GREEN,           kGreen)                                              \
-    d(BLUE,            kBlue)                                               \
-    d(MAGENTA,         kMagenta)                                            \
-    d(CYAN,            kCyan)                                               \
-    d(VIOLET,          kViolet)                                             \
-    d(PINK,            kPink)                                               \
-    d(ORANGE,          kOrange)                                             \
-    d(YELLOW,          kYellow)                                             \
-    d(SPRING,          kSpring)                                             \
-    d(TEAL,            kTeal)                                               \
-    d(AZURE,           kAzure)                                              \
-    d(GRAY,            kGray)                                               \
+    d(RED,             EColor(TColor::GetColorDark(kRed)))                  \
+    d(GREEN,           EColor(TColor::GetColorDark(kGreen)))                \
+    d(BLUE,            EColor(TColor::GetColorDark(kBlue)))                 \
+    d(MAGENTA,         EColor(TColor::GetColorDark(kMagenta)))              \
+    d(CYAN,            EColor(TColor::GetColorDark(kAzure)))                 \
+    d(VIOLET,          EColor(TColor::GetColorDark(kViolet)))               \
+    d(PINK,            EColor(TColor::GetColorDark(kPink)))                 \
+    d(ORANGE,          EColor(TColor::GetColorDark(kOrange)))               \
+    d(YELLOW,          EColor(TColor::GetColorDark(kYellow)))               \
+    d(SPRING,          EColor(TColor::GetColorDark(kSpring)))               \
+    d(TEAL,            EColor(TColor::GetColorDark(kTeal)))                 \
+    d(AZURE,           EColor(TColor::GetColorDark(kAzure)))                \
+    d(GRAY,            EColor(TColor::GetColorDark(kGray)))                 \
     d(DARKRED,         EColor(TColor::GetColorDark(kRed)))                  \
     d(DARKGREEN,       EColor(TColor::GetColorDark(kGreen)))                \
     d(DARKBLUE,        EColor(TColor::GetColorDark(kBlue)))                 \
