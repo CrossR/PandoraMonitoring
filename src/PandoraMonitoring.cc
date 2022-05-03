@@ -1066,9 +1066,33 @@ void PandoraMonitoring::SaveAndViewEvent(const std::string &savePath)
             throw StatusCodeException(STATUS_CODE_FAILURE);
 
         const TString displayName = TString(eveViewer->GetName()).ReplaceAll(" ", "_");
+
         eveViewer->GetGLViewer()->ResetCameras();
-        eveViewer->GetGLViewer()->SavePictureUsingFBO(savePath + "/event_" + std::to_string(m_eventDisplayCounter) + "_" + displayName.Data() + ".png",
-                1920, 1080);
+
+        if (displayName.Contains("3D")) {
+            std::vector<TGLViewer::ECameraType> views({
+                    TGLViewer::kCameraOrthoXOZ, TGLViewer::kCameraOrthoXOY, TGLViewer::kCameraOrthoZOY,
+                    TGLViewer::kCameraPerspXOZ, TGLViewer::kCameraPerspYOZ
+            });
+
+            std::vector<std::string> names({
+                    "XOZ_topDown", "XOY_frontOn", "ZOY_sideOn",
+                    "XOZP_sideOn", "ZOYP_topDown"
+            });
+
+            for (unsigned int v = 0; v < views.size(); ++v) {
+                auto view = views[v];
+                auto name = names[v];
+
+                eveViewer->GetGLViewer()->SetCurrentCamera(view);
+                eveViewer->GetGLViewer()->SavePictureUsingFBO(savePath + "/event_" + std::to_string(m_eventDisplayCounter) + "_" + displayName.Data() + "_" + name + ".png",
+                        1920, 1080);
+            }
+
+        } else {
+            eveViewer->GetGLViewer()->SavePictureUsingFBO(savePath + "/event_" + std::to_string(m_eventDisplayCounter) + "_" + displayName.Data() + ".png",
+                    1920, 1080);
+        }
 
         ++count;
 
