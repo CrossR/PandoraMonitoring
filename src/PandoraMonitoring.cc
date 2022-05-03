@@ -1089,6 +1089,21 @@ void PandoraMonitoring::SaveAndViewEvent(const std::string &savePath)
                         1920, 1080);
             }
 
+            std::vector<std::pair<double, double>> rotations({{-0.09, 0.6}});
+            names = {"-5_34"};
+
+            for (unsigned int v = 0; v < names.size(); ++v) {
+                auto rotate = rotations[v];
+                auto name = names[v];
+
+                eveViewer->GetGLViewer()->SetCurrentCamera(TGLViewer::kCameraPerspXOZ);
+                eveViewer->GetGLViewer()->ResetCameras();
+                eveViewer->GetGLViewer()->CurrentCamera().RotateRad(rotate.first, rotate.second);
+
+                eveViewer->GetGLViewer()->SavePictureUsingFBO(savePath + "/event_" + std::to_string(m_eventDisplayCounter) + "_" + displayName.Data() + "_" + name + ".png",
+                        1920, 1080);
+            }
+
         } else {
             eveViewer->GetGLViewer()->SavePictureUsingFBO(savePath + "/event_" + std::to_string(m_eventDisplayCounter) + "_" + displayName.Data() + ".png",
                     1920, 1080);
