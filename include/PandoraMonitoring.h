@@ -484,15 +484,15 @@ private:
     d(GREEN,           EColor(TColor::GetColorDark(kGreen)))                \
     d(BLUE,            EColor(TColor::GetColorDark(kBlue)))                 \
     d(MAGENTA,         EColor(TColor::GetColorDark(kMagenta)))              \
-    d(CYAN,            EColor(TColor::GetColorDark(kAzure)))                 \
+    d(CYAN,            EColor(TColor::GetColorDark(kAzure)))                \
     d(VIOLET,          EColor(TColor::GetColorDark(kViolet)))               \
     d(PINK,            EColor(TColor::GetColorDark(kPink)))                 \
     d(ORANGE,          EColor(TColor::GetColorDark(kOrange)))               \
     d(YELLOW,          EColor(TColor::GetColorDark(kYellow)))               \
-    d(SPRING,          EColor(TColor::GetColorDark(kSpring)))               \
+    d(SPRING,          EColor(TColor::GetColorDark(kSpring - 7)))           \
     d(TEAL,            EColor(TColor::GetColorDark(kTeal)))                 \
-    d(AZURE,           EColor(TColor::GetColorDark(kAzure)))                \
-    d(GRAY,            EColor(TColor::GetColorDark(kGray)))                 \
+    d(AZURE,           EColor(TColor::GetColorDark(kAzure - 7)))            \
+    d(GRAY,            EColor(kViolet + 5))                                 \
     d(DARKRED,         EColor(TColor::GetColorDark(kRed)))                  \
     d(DARKGREEN,       EColor(TColor::GetColorDark(kGreen)))                \
     d(DARKBLUE,        EColor(TColor::GetColorDark(kBlue)))                 \
