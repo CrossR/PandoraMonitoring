@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 # Enforce out-of-source builds, which is a good practice. 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
@@ -8,7 +8,7 @@ endif()
 project(PandoraMonitoring VERSION 4.0.0 LANGUAGES CXX)
 
 # Set a default installation prefix to a local 'install' directory inside the build folder.
-if(NOT CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Default install path for PandoraMonitoring" FORCE)
 endif()
 
