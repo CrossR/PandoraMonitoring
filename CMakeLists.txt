@@ -5,7 +5,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR "PandoraMonitoring requires an out-of-source build.")
 endif()
 
-project(PandoraMonitoring VERSION 4.0.0 LANGUAGES CXX)
+project(PandoraMonitoring VERSION 4.0.2 LANGUAGES CXX)
 
 # Set a default installation prefix to a local 'install' directory inside the build folder.
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
