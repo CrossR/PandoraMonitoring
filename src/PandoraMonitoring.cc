@@ -1876,39 +1876,45 @@ void PandoraMonitoring::InitializeGaps(TGeoVolume *pMainDetectorVolume, TGeoMedi
     for (const BoxGap *const pBoxGap : boxGapVector)
     {
         const std::string gapName("BoxGap_" + TypeToString(gapCounter++));
-        TGeoShape *pGapShape = new TGeoBBox(gapName.c_str(), 0.5f * pBoxGap->GetSide1().GetMagnitude() * m_scalingFactor,
-            0.5f * pBoxGap->GetSide2().GetMagnitude() * m_scalingFactor, 0.5f * pBoxGap->GetSide3().GetMagnitude() * m_scalingFactor);
+        const CartesianVector &vertex(pBoxGap->GetVertex());
+        const CartesianVector &side1(pBoxGap->GetSide1());
+        const CartesianVector &side2(pBoxGap->GetSide2());
+        const CartesianVector &side3(pBoxGap->GetSide3());
+
+        TGeoShape *pGapShape = new TGeoBBox(gapName.c_str(), 0.5f * side1.GetMagnitude() * m_scalingFactor,
+            0.5f * side2.GetMagnitude() * m_scalingFactor, 0.5f * side3.GetMagnitude() * m_scalingFactor);
 
         TGeoVolume *pGapVol = new TGeoVolume(gapName.c_str(), pGapShape, pGapMedium);
 
         static const float pi(std::acos(-1.));
-        float correction(0.f);
+        static const float epsilon(std::numeric_limits<float>::epsilon());
+        float phi(0.f);
 
-        try
+        const float side1TransverseMagnitude(std::sqrt(side1.GetX() * side1.GetX() + side1.GetY() * side1.GetY()));
+        const float side2TransverseMagnitude(std::sqrt(side2.GetX() * side2.GetX() + side2.GetY() * side2.GetY()));
+
+        if (side1TransverseMagnitude > epsilon)
         {
-            // ATTN ILD-specific correction, required for endcap box gaps that do not point back to origin in xy plane.
-            //      Pandora gaps are self-describing (four vectors), but this does not map cleanly to TGeoBBox class.
-            //      Best solution may be to move to different root TGeoShape.
-            const float vertexZ(pBoxGap->GetVertex().GetZ());
-            const float hcalEndCapInnerZ(std::fabs(m_pPandora->GetGeometry()->GetSubDetector(HCAL_ENDCAP).GetInnerZCoordinate()));
-            correction = ((std::fabs(vertexZ) < hcalEndCapInnerZ) ? 0 : ((vertexZ > 0.f) ? pi / 4.f : -pi / 4.f));
+            phi = std::atan2(-side1.GetY(), side1.GetX());
         }
-        catch (StatusCodeException &)
+        else if (side2TransverseMagnitude > epsilon)
         {
+            phi = std::atan2(side2.GetX(), side2.GetY());
         }
 
-        const float phiCorrection1(pBoxGap->GetVertex().GetX());
-        const float phiCorrection2(pBoxGap->GetVertex().GetY());
-        const float phi(correction + std::atan2(phiCorrection1, phiCorrection2));
+        if ((std::fabs(side1.GetZ()) > epsilon) || (std::fabs(side2.GetZ()) > epsilon) || (std::fabs(side3.GetX()) > epsilon) ||
+            (std::fabs(side3.GetY()) > epsilon))
+        {
+            std::cout << "PandoraMonitoring::InitializeGaps warning: approximating BoxGap '" << gapName
+                      << "' using a planar rotation display model." << std::endl;
+        }
+
+        const CartesianVector gapCenter(vertex + (side1 * 0.5f) + (side2 * 0.5f) + (side3 * 0.5f));
 
         const TGeoTranslation trans("trans",
-            (0.5f * pBoxGap->GetSide1().GetMagnitude() * std::cos(phi) + 0.5f * pBoxGap->GetSide2().GetMagnitude() * std::sin(phi) +
-                pBoxGap->GetVertex().GetX()) *
-                m_scalingFactor,
-            (-0.5f * pBoxGap->GetSide1().GetMagnitude() * std::sin(phi) + 0.5f * pBoxGap->GetSide2().GetMagnitude() * std::cos(phi) +
-                pBoxGap->GetVertex().GetY()) *
-                m_scalingFactor,
-            (0.5f * (2.f * pBoxGap->GetVertex().GetZ() + pBoxGap->GetSide3().GetZ()) * m_scalingFactor));
+            gapCenter.GetX() * m_scalingFactor,
+            gapCenter.GetY() * m_scalingFactor,
+            gapCenter.GetZ() * m_scalingFactor);
 
         const TGeoRotation rot("rot", -180.f * phi / pi, 0, 0);
 
